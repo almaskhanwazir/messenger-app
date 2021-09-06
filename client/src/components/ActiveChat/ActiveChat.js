@@ -50,7 +50,8 @@ const ActiveChat = (props) => {
               conversationId={conversation.id}
               user={user}
             />
-            <li ref={scrollRef} />
+            <div ref={scrollRef}>
+              </div>
           </Box>
         </>
       )}
