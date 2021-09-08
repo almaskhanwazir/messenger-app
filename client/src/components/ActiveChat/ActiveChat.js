@@ -52,8 +52,8 @@ const ActiveChat = (props) => {
               userId={user.id}
               readMsgs={()=>readMsgs()}
             />
-            <div ref={scrollRef}>
-              </div>
+            <Box ref={scrollRef}>
+              </Box>
             <Input
               otherUser={conversation.otherUser}
               conversationId={conversation.id}
