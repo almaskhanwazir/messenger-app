@@ -1,13 +1,19 @@
 const { Op } = require("sequelize");
 const db = require("../db");
 const Message = require("./message");
+const Sequelize = require("sequelize");
+
 
 const Conversation = db.define("conversation", {
   isGroup:{
     type: Sequelize.BOOLEAN,
     allowNull: true,
     defaultValue: false
-  }
+  },
+  membersList:{
+    type: Sequelize.ARRAY(Sequelize.TEXT),
+    allowNull: true,
+  },
 });
 
 // find conversation given two user Ids
