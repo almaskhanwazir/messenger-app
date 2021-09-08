@@ -17,7 +17,7 @@ export const addMessageToStore = (state, payload) => {
       const convoCopy = { ...convo };
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
-      convoCopy.unReadMsgsCount = convoCopy.messages.filter(msg => msg.senderId !== parseInt(userId) && msg.isRead== false).length;
+      convoCopy.unReadMsgsCount = convoCopy.messages.filter(msg => msg.senderId != parseInt(userId) && msg.isRead== false).length;
 
       return convoCopy;
     } else {
@@ -26,26 +26,47 @@ export const addMessageToStore = (state, payload) => {
   });
 };
 export const readMessagesStore = (state, payload) => {
-  const { conversationId } = payload;
+  const { readMsgData } = payload;
   var userId = localStorage.getItem("userId");
+  var inUserId = parseInt(userId);
   return state.map((convo) => {
-    if (convo.id === conversationId) {
+    if(readMsgData.userId && readMsgData.userId != inUserId){
       const convoCopy = { ...convo };
       var messagesList = convoCopy.messages;
-      var readMsgs = messagesList.filter(
-        (msg) => msg.senderId == parseInt(userId) && msg.isRead == true
+      var myMsgs = messagesList.filter(
+        (msg) => msg.senderId == parseInt(userId)
       );
+      messagesList=  messagesList.map((item) => ({
+        ...item,
+        readAvtar:false
+      }));
       var lastReadMsgIndex = messagesList.findIndex(
-        (msg) => msg.id == readMsgs[readMsgs.length - 1].id
+        (msg) => msg.id == myMsgs[myMsgs.length - 1].id
       );
       messagesList[lastReadMsgIndex].readAvtar = true;
       convoCopy.messages=messagesList;
-      convoCopy.unReadMsgsCount = 0;
 
       return convoCopy;
-    } else {
-      return convo;
+    }else{
+      if (convo.id === readMsgData.conversationId) {
+        const convoCopy = { ...convo };
+        var messagesList = convoCopy.messages;
+        var readMsgs = messagesList.filter(
+          (msg) => msg.senderId == parseInt(userId) && msg.isRead == true
+        );
+        var lastReadMsgIndex = messagesList.findIndex(
+          (msg) => msg.id == readMsgs[readMsgs.length - 1].id
+        );
+        messagesList[lastReadMsgIndex].readAvtar = true;
+        convoCopy.messages=messagesList;
+        convoCopy.unReadMsgsCount = 0;
+  
+        return convoCopy;
+      } else {
+        return convo;
+      }
     }
+    
   });
 }
 

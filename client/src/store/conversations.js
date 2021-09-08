@@ -33,10 +33,10 @@ export const setNewMessage = (message, sender) => {
     payload: { message, sender: sender || null },
   };
 };
-export const readMessages = (conversationId) => {
+export const readMessages = (readMsgData) => {
   return {
     type: READ_MSG,
-    payload: { conversationId },
+    payload: { readMsgData },
   };
 };
 

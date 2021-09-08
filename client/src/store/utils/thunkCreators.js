@@ -5,7 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
-  readMessages
+  readMessages,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -78,10 +78,12 @@ export const fetchConversations = () => async (dispatch) => {
 
     const newList = data.map((item) => ({
       ...item,
-      unReadMsgsCount: item.messages.filter(msg => msg.senderId !== parseInt(userId) && msg.isRead== false).length
+      unReadMsgsCount: item.messages.filter(
+        (msg) => msg.senderId != parseInt(userId) && msg.isRead == false
+      ).length,
     }));
 
-    dispatch(gotConversations(data));
+    dispatch(gotConversations(newList));
   } catch (error) {
     console.error(error);
   }
@@ -102,9 +104,9 @@ const sendMessage = (data, body) => {
 
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
-export const postMessage = (body) =>async (dispatch) => {
+export const postMessage = (body) => async (dispatch) => {
   try {
-    const data =await saveMessage(body);
+    const data = await saveMessage(body);
 
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
@@ -118,10 +120,20 @@ export const postMessage = (body) =>async (dispatch) => {
   }
 };
 
-export const readMessagesAction = (body) =>async (dispatch) => {
+export const readMessagesAction = (body) => async (dispatch) => {
   try {
-    const  res  = await axios.post("/api/readMessages", body);
-    if(res.data && res.data.success){dispatch(readMessages(body.conversationId));}
+    const res = await axios.post("/api/readMessages", body);
+    if (res.data && res.data.success) {
+      await dispatch(readMessages(body));
+    }else{
+      return null;
+    }
+    var userId = localStorage.getItem("userId");
+    if(body && body.conversationId){
+      socket.emit("read_msgs", {userId: parseInt(userId), conversationId: body.conversationId});
+    }
+    
+
   } catch (error) {
     console.error(error);
   }

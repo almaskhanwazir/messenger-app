@@ -16,17 +16,17 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     "&:hover": {
-      cursor: "grab"
-    }
+      cursor: "grab",
+    },
   },
   badge: {
     borderRadius: 15,
     marginRight: 20,
     paddingTop: 15,
-    paddingBottom:15,
+    paddingBottom: 15,
     paddingLeft: 12,
-    paddingRight:12,
-    fontSize: 18
+    paddingRight: 12,
+    fontSize: 18,
   },
 }));
 
@@ -34,20 +34,27 @@ const Chat = (props) => {
   const classes = useStyles();
   const { conversation, readMessagesAction, user } = props;
   const { otherUser } = conversation;
-  
+
   const handleClick = async (conversation) => {
     await props.setActiveChat(conversation.otherUser.username);
-    if(conversation.messages && conversation.messages.length>0 && conversation.unReadMsgsCount>0){
-      await readMessagesAction({conversationId:conversation.messages[0].conversationId});
+    if (
+      conversation.messages &&
+      conversation.messages.length > 0 &&
+      conversation.unReadMsgsCount > 0
+    ) {
+      await readMessagesAction({
+        conversationId: conversation.messages[0].conversationId,
+      });
     }
-    
   };
-const unreadMsgsBadge =  <Badge
-classes={{ badge: classes.badge }}
-color="primary"
-badgeContent={conversation.unReadMsgsCount}
-showZero
-/>
+  const unreadMsgsBadge = (
+    <Badge
+      classes={{ badge: classes.badge }}
+      color="primary"
+      badgeContent={conversation.unReadMsgsCount}
+      showZero
+    />
+  );
   return (
     <Box onClick={() => handleClick(conversation)} className={classes.root}>
       <BadgeAvatar
@@ -57,7 +64,7 @@ showZero
         sidebar={true}
       />
       <ChatContent conversation={conversation} />
-     {conversation && conversation.unReadMsgsCount>0 && unreadMsgsBadge}
+      {conversation && conversation.unReadMsgsCount > 0 && unreadMsgsBadge}
     </Box>
   );
 };
