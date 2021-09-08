@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  readMessages
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -48,6 +49,7 @@ export const login = (credentials) => async (dispatch) => {
   try {
     const { data } = await axios.post("/auth/login", credentials);
     await localStorage.setItem("messenger-token", data.token);
+    await localStorage.setItem("userId", data.id);
     dispatch(gotUser(data));
     socket.emit("go-online", data.id);
   } catch (error) {
@@ -72,6 +74,13 @@ export const logout = (id) => async (dispatch) => {
 export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
+    var userId = localStorage.getItem("userId");
+
+    const newList = data.map((item) => ({
+      ...item,
+      unReadMsgsCount: item.messages.filter(msg => msg.senderId !== parseInt(userId) && msg.isRead== false).length
+    }));
+
     dispatch(gotConversations(data));
   } catch (error) {
     console.error(error);
@@ -104,6 +113,15 @@ export const postMessage = (body) =>async (dispatch) => {
     }
 
     sendMessage(data, body);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const readMessagesAction = (body) =>async (dispatch) => {
+  try {
+    const  res  = await axios.post("/api/readMessages", body);
+    if(res.data && res.data.success){dispatch(readMessages(body.conversationId));}
   } catch (error) {
     console.error(error);
   }

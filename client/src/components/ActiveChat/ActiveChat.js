@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
 import { Input, Header, Messages } from "./index";
 import { connect } from "react-redux";
+import { readMessagesAction } from "../../store/utils/thunkCreators";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -25,11 +26,16 @@ const ActiveChat = (props) => {
   const classes = useStyles();
   const { user } = props;
   const conversation = props.conversation || {};
+  
+  const readMsgs = async () => {
+    await props.readMessagesAction({conversationId: conversation.messages[0].conversationId});
+  }
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behaviour: "smooth" });
     }
-  }, [conversation]);
+  }, [conversation.messages]);
 
   return (
     <Box className={classes.root}>
@@ -44,14 +50,15 @@ const ActiveChat = (props) => {
               messages={conversation.messages}
               otherUser={conversation.otherUser}
               userId={user.id}
+              readMsgs={()=>readMsgs()}
             />
+            <div ref={scrollRef}>
+              </div>
             <Input
               otherUser={conversation.otherUser}
               conversationId={conversation.id}
               user={user}
             />
-            <div ref={scrollRef}>
-              </div>
           </Box>
         </>
       )}
@@ -69,5 +76,12 @@ const mapStateToProps = (state) => {
       )
   };
 };
+const mapDispatchToProps = (dispatch) => {
+  return {
+    readMessagesAction: (message) => {
+      dispatch(readMessagesAction(message));
+    },
+  };
+};
 
-export default connect(mapStateToProps, null)(ActiveChat);
+export default connect(mapStateToProps, mapDispatchToProps)(ActiveChat);
