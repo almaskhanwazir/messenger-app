@@ -14,6 +14,9 @@ const GroupMember = db.define("groupMembers", {
     allowNull: false,
     defaultValue: 0,
   },
+  photoUrl: {
+    type: Sequelize.STRING
+  },
   conversationId: {
     type: Sequelize.INTEGER,
     references: "conversations",
