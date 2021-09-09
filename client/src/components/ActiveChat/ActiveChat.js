@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
 import { Input, Header, Messages } from "./index";
@@ -21,9 +21,15 @@ const useStyles = makeStyles(() => ({
 }));
 
 const ActiveChat = (props) => {
+  const scrollRef = useRef(null);
   const classes = useStyles();
   const { user } = props;
   const conversation = props.conversation || {};
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behaviour: "smooth" });
+    }
+  }, [conversation]);
 
   return (
     <Box className={classes.root}>
@@ -44,6 +50,8 @@ const ActiveChat = (props) => {
               conversationId={conversation.id}
               user={user}
             />
+            <Box ref={scrollRef}></Box>
+           
           </Box>
         </>
       )}

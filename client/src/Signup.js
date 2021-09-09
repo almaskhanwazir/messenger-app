@@ -8,14 +8,74 @@ import {
   Button,
   FormControl,
   TextField,
-  FormHelperText,
+  CssBaseline,
+  Avatar,
+  Checkbox,
+  Link,
+  Paper,
+  makeStyles,
+  FormHelperText
 } from "@material-ui/core";
 import { register } from "./store/utils/thunkCreators";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    height: '100vh',
+  },
+  image: {
+    backgroundImage: 'url(https://source.unsplash.com/random)',
+    backgroundRepeat: 'no-repeat',
+    backgroundColor:
+      theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  },
+  disabled: {
+    color: theme.palette.text.disabled,
+  },
+  ButtonShade: {
+    fontSIze: '20px',
+    padding: '5px 40px',
+    borderRadius: '5px',
+    margin: '15px 0px',
+    cursor: 'pointer',
+  },
+  topButtonBox: {
+    height: 100,
+    display: "flex",
+    padding: 8,
+    justifyContent: "flex-end"
+  },
+  paper: {
+    margin: theme.spacing(8, 4),
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1)
+  },
+  signInGrid: {
+    margin: `${theme.spacing(0, 4)}px auto`,
+    padding: theme.spacing(0, 8),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+    padding: '10px 40px',
+    borderRadius: '5px',
+    cursor: 'pointer',
+  },
+}));
 
 const Login = (props) => {
   const history = useHistory();
   const { user, register } = props;
   const [formErrorMessage, setFormErrorMessage] = useState({});
+  const classes = useStyles();
 
   const handleRegister = async (event) => {
     event.preventDefault();
@@ -37,28 +97,69 @@ const Login = (props) => {
   }
 
   return (
-    <Grid container justify="center">
-      <Box>
-        <Grid container item>
-          <Typography>Need to log in?</Typography>
-          <Button onClick={() => history.push("/login")}>Login</Button>
-        </Grid>
-        <form onSubmit={handleRegister}>
-          <Grid>
+    <Grid container component="main" className={classes.root}>
+      <CssBaseline />
+
+      <Grid item xs={false} sm={5} md={6} className={classes.image} />
+      <Grid item xs={12} sm={7} md={6} className={classes.signInGrid} component={Paper} elevation={6} square>
+        <Box
+          component="span"
+          m={1} //margin
+          className={`${classes.topButtonBox}`}
+        >
+          <Box
+            component="span"
+            m={3} //margin
+          >
+            <Typography
+              className={classes.disabled}
+            >
+              Need to log in?
+            </Typography>
+          </Box>
+
+
+          <Button
+            variant="contained"
+            style={{ backgroundColor: '#FFFFFF', color: '#3c57f0' }}
+            className={classes.ButtonShade}
+            onClick={() => history.push("/login")}
+          > Login
+          </Button>
+        </Box>
+        <div className={classes.paper}
+        >
+          <Typography
+            component="h1"
+            variant="h5"
+          >
+            <Box fontWeight="fontWeightBold" m={1}>
+              Welcome back!
+            </Box>
+
+          </Typography>
+          <form onSubmit={handleRegister} className={classes.form} noValidate>
             <Grid>
-              <FormControl>
+              <FormControl fullWidth>
                 <TextField
-                  aria-label="username"
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="username"
                   label="Username"
                   name="username"
-                  type="text"
-                  required
+                  autoFocus
                 />
               </FormControl>
             </Grid>
             <Grid>
-              <FormControl>
+              <FormControl fullWidth>
                 <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
                   label="E-mail address"
                   aria-label="e-mail address"
                   type="email"
@@ -68,8 +169,12 @@ const Login = (props) => {
               </FormControl>
             </Grid>
             <Grid>
-              <FormControl error={!!formErrorMessage.confirmPassword}>
+              <FormControl fullWidth error={!!formErrorMessage.confirmPassword}>
                 <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
                   aria-label="password"
                   label="Password"
                   type="password"
@@ -83,8 +188,12 @@ const Login = (props) => {
               </FormControl>
             </Grid>
             <Grid>
-              <FormControl error={!!formErrorMessage.confirmPassword}>
+              <FormControl fullWidth error={!!formErrorMessage.confirmPassword}>
                 <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
                   label="Confirm Password"
                   aria-label="confirm password"
                   type="password"
@@ -97,12 +206,19 @@ const Login = (props) => {
                 </FormHelperText>
               </FormControl>
             </Grid>
-            <Button type="submit" variant="contained" size="large">
-              Create
-            </Button>
-          </Grid>
-        </form>
-      </Box>
+            <Box textAlign='center'>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+              >
+                Create
+              </Button>
+            </Box>
+          </form>
+        </div>
+      </Grid>
     </Grid>
   );
 };
