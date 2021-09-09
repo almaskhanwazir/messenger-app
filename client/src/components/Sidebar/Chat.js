@@ -22,10 +22,7 @@ const useStyles = makeStyles((theme) => ({
   badge: {
     borderRadius: 15,
     marginRight: 20,
-    paddingTop: 15,
-    paddingBottom: 15,
-    paddingLeft: 12,
-    paddingRight: 12,
+    padding:theme.spacing(1.8,1.3),
     fontSize: 18,
   },
 }));

@@ -7,18 +7,8 @@ import { connect } from "react-redux";
 
 const Messages = (props) => {
   const { messages, otherUser, userId } = props;
-  const [allMessages, setMessages] = useState({});
 
   useEffect(() => {
-    var messagesList = messages;
-    var readMsgs = messages.filter(
-      (msg) => msg.senderId == parseInt(userId) && msg.isRead == true
-    );
-    var lastReadMsgIndex = messages.findIndex(
-      (msg) => msg.id == readMsgs[readMsgs.length - 1].id
-    );
-    messagesList[lastReadMsgIndex].readAvtar = true;
-
     if (messages[0].conversationId) {
       props.readMsgs({ conversationId: messages[0].conversationId });
     }

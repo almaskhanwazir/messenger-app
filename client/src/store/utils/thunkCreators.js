@@ -122,7 +122,7 @@ export const postMessage = (body) => async (dispatch) => {
 
 export const readMessagesAction = (body) => async (dispatch) => {
   try {
-    const res = await axios.post("/api/readMessages", body);
+    const res = await axios.put("/api/readMessages", body);
     if (res.data && res.data.success) {
       await dispatch(readMessages(body));
     }else{
