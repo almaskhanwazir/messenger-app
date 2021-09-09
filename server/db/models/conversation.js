@@ -10,10 +10,6 @@ const Conversation = db.define("conversation", {
     allowNull: true,
     defaultValue: false
   },
-  membersList:{
-    type: Sequelize.ARRAY(Sequelize.TEXT),
-    allowNull: true,
-  },
 });
 
 // find conversation given two user Ids
