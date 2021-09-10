@@ -17,7 +17,7 @@ router.put("/", async (req, res, next) => {
           user2Id: senderId,
         },
       },
-    });console.log(conversations)
+    });
     if(conversations){
       Message.update(
         { isRead: true },
@@ -32,7 +32,7 @@ router.put("/", async (req, res, next) => {
       );
       res.json({ message: "Read messages success", success: true });
     }else{
-      res.json({ message: "user not belong to conversation", success: false });
+      res.status(400).json({ message: "user not belong to conversation", success: false });
     }
   } catch (error) {
     next(error);
