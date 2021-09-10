@@ -41,6 +41,8 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '5px',
     margin: '15px 0px',
     cursor: 'pointer',
+    backgroundColor: '#FFFFFF', 
+    color: '#3c57f0'
   },
   topButtonBox: {
     height: 100,
@@ -115,13 +117,12 @@ const Login = (props) => {
 
           <Button
             variant="contained"
-            style={{ backgroundColor: '#FFFFFF', color: '#3c57f0' }}
             className={classes.ButtonShade}
             onClick={() => history.push("/register")}
           > Create Account
           </Button>
         </Box>
-        <div className={classes.paper}
+        <Box className={classes.paper}
         >
           <Typography
             component="h1"
@@ -170,7 +171,7 @@ const Login = (props) => {
               </Button>
             </Box>
           </form>
-        </div>
+        </Box>
       </Grid>
     </Grid>
   );

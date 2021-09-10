@@ -74,7 +74,7 @@ export const logout = (id) => async (dispatch) => {
 export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
-    var userId = localStorage.getItem("userId");
+    let userId = localStorage.getItem("userId");
 
     const newList = data.map((item) => ({
       ...item,
@@ -128,7 +128,7 @@ export const readMessagesAction = (body) => async (dispatch) => {
     }else{
       return null;
     }
-    var userId = localStorage.getItem("userId");
+    let userId = localStorage.getItem("userId");
     if(body && body.conversationId){
       socket.emit("read_msgs", {userId: parseInt(userId), conversationId: body.conversationId});
     }

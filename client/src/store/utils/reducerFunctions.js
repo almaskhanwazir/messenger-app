@@ -1,5 +1,5 @@
 export const addMessageToStore = (state, payload) => {
-  var userId = localStorage.getItem("userId");
+  let userId = localStorage.getItem("userId");
   const { message, sender } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
   if (sender !== null) {
@@ -27,20 +27,20 @@ export const addMessageToStore = (state, payload) => {
 };
 export const readMessagesStore = (state, payload) => {
   const { readMsgData } = payload;
-  var userId = localStorage.getItem("userId");
-  var inUserId = parseInt(userId);
+  let userId = localStorage.getItem("userId");
+  let inUserId = parseInt(userId);
   return state.map((convo) => {
     if(readMsgData.userId && readMsgData.userId != inUserId){
       const convoCopy = { ...convo };
-      var messagesList = convoCopy.messages;
-      var myMsgs = messagesList.filter(
+      let messagesList = convoCopy.messages;
+      let myMsgs = messagesList.filter(
         (msg) => msg.senderId == parseInt(userId)
       );
       messagesList=  messagesList.map((item) => ({
         ...item,
         readAvtar:false
       }));
-      var lastReadMsgIndex = messagesList.findIndex(
+      let lastReadMsgIndex = messagesList.findIndex(
         (msg) => msg.id == myMsgs[myMsgs.length - 1].id
       );
       messagesList[lastReadMsgIndex].readAvtar = true;
@@ -50,11 +50,11 @@ export const readMessagesStore = (state, payload) => {
     }else{
       if (convo.id === readMsgData.conversationId) {
         const convoCopy = { ...convo };
-        var messagesList = convoCopy.messages;
-        var readMsgs = messagesList.filter(
+        let messagesList = convoCopy.messages;
+        let readMsgs = messagesList.filter(
           (msg) => msg.senderId == parseInt(userId) && msg.isRead == true
         );
-        var lastReadMsgIndex = messagesList.findIndex(
+        let lastReadMsgIndex = messagesList.findIndex(
           (msg) => msg.id == readMsgs[readMsgs.length - 1].id
         );
         messagesList[lastReadMsgIndex].readAvtar = true;
