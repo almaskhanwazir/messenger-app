@@ -11,7 +11,7 @@ const Message = db.define("message", {
     allowNull: false,
   },
   seenBy:{
-    type: Sequelize.ARRAY,
+    type: Sequelize.ARRAY(Sequelize.STRING),
     allowNull: true,
   }
 });
