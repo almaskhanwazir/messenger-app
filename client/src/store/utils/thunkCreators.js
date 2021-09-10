@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  readMessages,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -48,6 +49,7 @@ export const login = (credentials) => async (dispatch) => {
   try {
     const { data } = await axios.post("/auth/login", credentials);
     await localStorage.setItem("messenger-token", data.token);
+    await localStorage.setItem("userId", data.id);
     dispatch(gotUser(data));
     socket.emit("go-online", data.id);
   } catch (error) {
@@ -72,7 +74,16 @@ export const logout = (id) => async (dispatch) => {
 export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
-    dispatch(gotConversations(data));
+    let userId = localStorage.getItem("userId");
+
+    const newList = data.map((item) => ({
+      ...item,
+      unReadMsgsCount: item.messages.filter(
+        (msg) => msg.senderId != parseInt(userId) && msg.isRead == false
+      ).length,
+    }));
+
+    dispatch(gotConversations(newList));
   } catch (error) {
     console.error(error);
   }
@@ -93,9 +104,9 @@ const sendMessage = (data, body) => {
 
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
-export const postMessage = (body) =>async (dispatch) => {
+export const postMessage = (body) => async (dispatch) => {
   try {
-    const data =await saveMessage(body);
+    const data = await saveMessage(body);
 
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
@@ -104,6 +115,25 @@ export const postMessage = (body) =>async (dispatch) => {
     }
 
     sendMessage(data, body);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const readMessagesAction = (body) => async (dispatch) => {
+  try {
+    const res = await axios.put("/api/readMessages", body);
+    if (res.data && res.data.success) {
+      await dispatch(readMessages(body));
+    }else{
+      return null;
+    }
+    let userId = localStorage.getItem("userId");
+    if(body && body.conversationId){
+      socket.emit("read_msgs", {userId: parseInt(userId), conversationId: body.conversationId});
+    }
+    
+
   } catch (error) {
     console.error(error);
   }

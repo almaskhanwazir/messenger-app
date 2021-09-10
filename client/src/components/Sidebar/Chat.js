@@ -4,6 +4,8 @@ import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
 import { connect } from "react-redux";
+import { readMessagesAction } from "../../store/utils/thunkCreators";
+import Badge from "@material-ui/core/Badge";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,20 +16,42 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     "&:hover": {
-      cursor: "grab"
-    }
-  }
+      cursor: "grab",
+    },
+  },
+  badge: {
+    borderRadius: 15,
+    marginRight: 20,
+    padding:theme.spacing(1.8,1.3),
+    fontSize: 18,
+  },
 }));
 
 const Chat = (props) => {
   const classes = useStyles();
-  const { conversation } = props;
+  const { conversation, readMessagesAction, user } = props;
   const { otherUser } = conversation;
 
   const handleClick = async (conversation) => {
     await props.setActiveChat(conversation.otherUser.username);
+    if (
+      conversation.messages &&
+      conversation.messages.length > 0 &&
+      conversation.unReadMsgsCount > 0
+    ) {
+      await readMessagesAction({
+        conversationId: conversation.messages[0].conversationId,
+      });
+    }
   };
-
+  const unreadMsgsBadge = (
+    <Badge
+      classes={{ badge: classes.badge }}
+      color="primary"
+      badgeContent={conversation.unReadMsgsCount}
+      showZero
+    />
+  );
   return (
     <Box onClick={() => handleClick(conversation)} className={classes.root}>
       <BadgeAvatar
@@ -37,16 +61,26 @@ const Chat = (props) => {
         sidebar={true}
       />
       <ChatContent conversation={conversation} />
+      {conversation && conversation.unReadMsgsCount > 0 && unreadMsgsBadge}
     </Box>
   );
+};
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
-    }
+    },
+    readMessagesAction: (message) => {
+      dispatch(readMessagesAction(message));
+    },
   };
 };
 
-export default connect(null, mapDispatchToProps)(Chat);
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);
